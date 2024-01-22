@@ -2,7 +2,7 @@ class Window {
   String? windowId;
   String? roomId;
   String? name;
-  double? status;
+  num? status;
   int? height;
   String? mode;
   List<String>? timers;

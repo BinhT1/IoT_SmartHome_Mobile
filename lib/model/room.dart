@@ -4,9 +4,9 @@ class Room {
   String? name;
   List<String>? connectedLamp;
   List<String>? connectedWindow;
-  double? humidity;
-  double? temperature;
-  double? lightIntensity;
+  num? humidity;
+  num? temperature;
+  num? lightIntensity;
 
   Room(
       {this.roomId,
@@ -40,5 +40,16 @@ class Room {
     data['temperature'] = this.temperature;
     data['lightIntensity'] = this.lightIntensity;
     return data;
+  }
+
+  Room.empty() {
+    roomId = "";
+    user = "";
+    name = "";
+    connectedLamp = [];
+    connectedWindow = [];
+    humidity = 0;
+    temperature = 0;
+    lightIntensity = 0;
   }
 }

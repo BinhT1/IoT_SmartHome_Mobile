@@ -310,7 +310,7 @@ class _HomeState extends State<Home> {
                       itemCount: roomData.length,
                       itemBuilder: (context, index) {
                         return Container(
-                          margin: const EdgeInsets.symmetric(vertical: 16),
+                          margin: const EdgeInsets.only(top: 16),
                           child: InkWell(
                             borderRadius: BorderRadius.circular(12),
                             highlightColor: Colors.lightBlue[50],
