@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:smart_home/model/lamp.dart';
-import 'package:smart_home/routes.dart';
+import 'package:smart_home/views/lamp_page.dart';
 
 class LampCard extends StatelessWidget {
   final Lamp lamp;
-  const LampCard({required this.lamp, Key? key}) : super(key: key);
+  final void Function()? callback;
+  const LampCard({
+    required this.lamp,
+    Key? key,
+    this.callback,
+  }) : super(key: key);
 
   String get getStatus {
     if (lamp.status != null) {
@@ -43,11 +48,15 @@ class LampCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         highlightColor: Colors.lightBlue[50],
         splashColor: Colors.lightBlue[50],
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            PageNames.room,
-          );
+        onTap: () async {
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LampPage(
+                  args: lamp,
+                ),
+              ));
+          callback!.call();
         },
         child: Container(
           padding: const EdgeInsets.all(12),

@@ -4,6 +4,7 @@ import 'package:smart_home/apis/room_api.dart';
 import 'package:smart_home/const/global.dart';
 import 'package:smart_home/model/room.dart';
 import 'package:smart_home/routes.dart';
+import 'package:smart_home/views/room_page.dart';
 import 'package:smart_home/widget/loading_indicator.dart';
 
 class Home extends StatefulWidget {
@@ -315,9 +316,14 @@ class _HomeState extends State<Home> {
                             borderRadius: BorderRadius.circular(12),
                             highlightColor: Colors.lightBlue[50],
                             splashColor: Colors.lightBlue[50],
-                            onTap: () {
-                              Navigator.pushNamed(context, PageNames.room,
-                                  arguments: roomData[index]);
+                            onTap: () async {
+                              await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RoomPage(
+                                            args: roomData[index],
+                                          )));
+                              initData();
                             },
                             child: Container(
                               padding: const EdgeInsets.all(12),

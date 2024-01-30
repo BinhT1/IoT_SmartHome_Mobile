@@ -37,4 +37,14 @@ class Lamp {
     data['breakpoint'] = this.breakpoint;
     return data;
   }
+
+  Lamp.empty() {
+    lampId = "";
+    name = "";
+    roomId = "";
+    status = false;
+    mode = "";
+    timers = [];
+    breakpoint = 0;
+  }
 }

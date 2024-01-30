@@ -41,4 +41,15 @@ class Window {
     data['breakpoints'] = this.breakpoints;
     return data;
   }
+
+  Window.empty() {
+    windowId = "";
+    roomId = "";
+    name = "";
+    status = 0;
+    height = 0;
+    mode = "";
+    timers = [];
+    breakpoints = [];
+  }
 }

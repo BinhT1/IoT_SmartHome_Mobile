@@ -6,7 +6,8 @@ import 'package:smart_home/const/global.dart';
 var dio = Dio();
 void configureDio() {
   // Set default configs
-  dio.options.baseUrl = "https://binht1-iot-smarthome-be.onrender.com";
+  // dio.options.baseUrl = "https://binht1-iot-smarthome-be.onrender.com";
+  dio.options.baseUrl = 'http://10.0.2.2:8000';
   dio.options.connectTimeout = const Duration(seconds: 15);
   dio.options.receiveTimeout = const Duration(seconds: 15);
 }

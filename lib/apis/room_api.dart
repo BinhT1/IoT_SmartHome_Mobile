@@ -25,3 +25,21 @@ dynamic detailRoom(String roomId) async {
 
   return res;
 }
+
+dynamic changeName(String roomId, String name) async {
+  var res = await sendRequest(
+      "/api/v1/room/update", "PUT", {"roomId": roomId, "name": name});
+
+  print(res);
+
+  return res;
+}
+
+dynamic delete(String roomId) async {
+  var res =
+      await sendRequest("/api/v1/room/delete", "POST", {"roomId": roomId});
+
+  print(res);
+
+  return res;
+}
