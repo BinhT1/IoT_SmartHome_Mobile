@@ -1,5 +1,9 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:smart_home/apis/room_api.dart';
 import 'package:smart_home/apis/lamp_api.dart' as lamp_api;
 import 'package:smart_home/apis/window_api.dart' as window_api;
@@ -7,9 +11,11 @@ import 'package:smart_home/const/global.dart';
 import 'package:smart_home/model/lamp.dart';
 import 'package:smart_home/model/room.dart';
 import 'package:smart_home/model/window.dart';
+import 'package:smart_home/utils/websocket_helper.dart';
 import 'package:smart_home/widget/lamp_card.dart';
 import 'package:smart_home/widget/loading_indicator.dart';
 import 'package:smart_home/widget/window_card.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class _Data {
   _Data(this.time, this.data);
@@ -36,6 +42,8 @@ class _RoomPageState extends State<RoomPage> {
   TextEditingController windowNameController = TextEditingController();
   TextEditingController windowHeightController = TextEditingController();
 
+  late StreamSubscription _streamSubscription;
+
   List<_Data> dataT = [
     _Data("0", 0),
     _Data("1", 0),
@@ -57,6 +65,11 @@ class _RoomPageState extends State<RoomPage> {
     _Data("3", 0),
     _Data("4", 0),
   ];
+  late int count;
+
+  ChartSeriesController<_Data, String>? _chartSeriesControllerT;
+  ChartSeriesController<_Data, String>? _chartSeriesControllerH;
+  ChartSeriesController<_Data, String>? _chartSeriesControllerL;
 
   Room room = Room.empty();
   List<Lamp> lamps = [];
@@ -67,6 +80,10 @@ class _RoomPageState extends State<RoomPage> {
 
   @override
   void initState() {
+    count = 4;
+    _streamSubscription = WebsocketHelper().stream.listen((message) {
+      updateData(jsonDecode(message));
+    });
     initData();
     super.initState();
   }
@@ -77,6 +94,7 @@ class _RoomPageState extends State<RoomPage> {
     lampController.dispose();
     windowNameController.dispose();
     windowHeightController.dispose();
+    _streamSubscription.cancel();
     super.dispose();
   }
 
@@ -538,6 +556,44 @@ class _RoomPageState extends State<RoomPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const Text("Biểu đồ"),
+                    SfCartesianChart(
+                        primaryXAxis: CategoryAxis(),
+                        // Chart title
+                        title: ChartTitle(text: 'Nhiệt Độ, Độ Ẩm'),
+                        // Enable legend
+                        legend: Legend(isVisible: true),
+                        // Enable tooltip
+                        tooltipBehavior: TooltipBehavior(enable: true),
+                        series: <LineSeries<_Data, String>>[
+                          LineSeries<_Data, String>(
+                              onRendererCreated:
+                                  (ChartSeriesController<_Data, String>?
+                                      controller) {
+                                _chartSeriesControllerT = controller;
+                              },
+                              dataSource: dataT,
+                              xValueMapper: (_Data sales, _) => sales.time,
+                              yValueMapper: (_Data sales, _) => sales.data,
+                              color: Colors.red,
+                              name: 'Nhiệt Độ',
+                              // Enable data label
+                              dataLabelSettings:
+                                  DataLabelSettings(isVisible: true)),
+                          LineSeries<_Data, String>(
+                              onRendererCreated:
+                                  (ChartSeriesController<_Data, String>?
+                                      controller) {
+                                _chartSeriesControllerH = controller;
+                              },
+                              dataSource: dataH,
+                              xValueMapper: (_Data sales, _) => sales.time,
+                              yValueMapper: (_Data sales, _) => sales.data,
+                              color: Colors.blue,
+                              name: 'Độ Ẩm',
+                              // Enable data label
+                              dataLabelSettings:
+                                  DataLabelSettings(isVisible: true))
+                        ]),
                     const SizedBox(
                       height: 12,
                     ),
@@ -639,5 +695,39 @@ class _RoomPageState extends State<RoomPage> {
         ]
       ],
     );
+  }
+
+  void updateData(Map<dynamic, dynamic> data) {
+    String time = DateFormat.Hms().format(DateTime.now());
+
+    setState(() {
+      dataT.add(_Data(time, data["temperature"].toDouble()));
+      dataH.add(_Data(time, data["humidity"].toDouble()));
+      dataL.add(_Data(time, data["lightIntensity"].toDouble()));
+
+      if (dataT.length < 6) {
+        _chartSeriesControllerT
+            ?.updateDataSource(addedDataIndexes: <int>[dataT.length - 1]);
+        _chartSeriesControllerH
+            ?.updateDataSource(addedDataIndexes: <int>[dataH.length - 1]);
+        _chartSeriesControllerL
+            ?.updateDataSource(addedDataIndexes: <int>[dataL.length - 1]);
+      } else {
+        dataT.removeAt(0);
+        dataH.removeAt(0);
+        dataL.removeAt(0);
+        _chartSeriesControllerT?.updateDataSource(
+            addedDataIndexes: <int>[dataT.length - 1],
+            removedDataIndexes: <int>[0]);
+        _chartSeriesControllerH?.updateDataSource(
+            addedDataIndexes: <int>[dataT.length - 1],
+            removedDataIndexes: <int>[0]);
+        _chartSeriesControllerL?.updateDataSource(
+            addedDataIndexes: <int>[dataT.length - 1],
+            removedDataIndexes: <int>[0]);
+      }
+
+      count = count + 1;
+    });
   }
 }
