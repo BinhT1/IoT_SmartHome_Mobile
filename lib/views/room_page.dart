@@ -369,6 +369,10 @@ class _RoomPageState extends State<RoomPage> {
                               int.parse(windowHeightController.text));
                           if (res["result"] == "success") {
                             initData();
+                            setState(() {
+                              windowHeightController.text = "";
+                              windowNameController.text = "";
+                            });
                           } else {
                             Fluttertoast.showToast(
                                 msg: "Lỗi khi lấy dữ liệu",

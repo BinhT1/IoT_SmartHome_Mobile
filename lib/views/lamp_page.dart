@@ -237,7 +237,7 @@ class _LampPageState extends State<LampPage> {
                                             tmpTimer.removeAt(index);
                                           });
                                         },
-                                        child: Text(
+                                        child: const Text(
                                           "xoá",
                                           style: TextStyle(color: Colors.red),
                                         ))
@@ -367,7 +367,7 @@ class _LampPageState extends State<LampPage> {
     });
 
     if (mode == "manual") {
-      lamp_api.controlManual(lamp.lampId!, lamp.status!);
+      controlManual(lamp.status!);
     }
     if (mode == "timer") {}
 

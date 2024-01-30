@@ -10,24 +10,28 @@ dynamic createWindow(
   return res;
 }
 
-dynamic changeName(String windowId, String name) async {
-  var res = await sendRequest("/api/v1/window/change-name", "POST",
-      {"windowId": windowId, "name": name});
+// done
+dynamic changeNameHeight(
+    {required String windowId, String? name, int? height}) async {
+  var res = await sendRequest("/api/v1/window/change-name-height", "POST",
+      {"windowId": windowId, "name": name, "height": height});
 
   print(res);
 
   return res;
 }
 
-dynamic controlManual(String windowId, bool control) async {
+//done
+dynamic controlManual(String windowId, int status) async {
   var res = await sendRequest("/api/v1/window/control-manual", "POST",
-      {"windowId": windowId, "control": control});
+      {"windowId": windowId, "status": status});
 
   print(res);
 
   return res;
 }
 
+//done
 dynamic changeMode(String windowId, String mode) async {
   var res = await sendRequest("/api/v1/window/change-mode", "POST",
       {"windowId": windowId, "mode": mode});
@@ -37,15 +41,17 @@ dynamic changeMode(String windowId, String mode) async {
   return res;
 }
 
-dynamic changeBreakpoint(String windowId, int breakpoint) async {
+//done
+dynamic changeBreakpoint(String windowId, List<String> breakpoint) async {
   var res = await sendRequest("/api/v1/window/change-breakpoint", "POST",
-      {"windowId": windowId, "breakpoint": breakpoint});
+      {"windowId": windowId, "breakpoints": breakpoint});
 
   print(res);
 
   return res;
 }
 
+//done
 dynamic changeTimer(String windowId, List<String> timers) async {
   var res = await sendRequest("/api/v1/window/change-timers", "POST",
       {"windowId": windowId, "timers": timers});
@@ -55,6 +61,7 @@ dynamic changeTimer(String windowId, List<String> timers) async {
   return res;
 }
 
+//done
 dynamic delete(String windowId) async {
   var res = await sendRequest(
       "/api/v1/window/delete", "POST", {"windowId": windowId});
