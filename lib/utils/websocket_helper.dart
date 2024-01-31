@@ -40,8 +40,7 @@ class WebsocketHelper {
   }
 
   Future<WebSocket?> connectWs() async {
-    _channel =
-        await WebSocket.connect("wss://binht1-iot-smarthome-be.onrender.com");
+    _channel = await WebSocket.connect("ws://10.0.2.2:8000");
 
     return _channel;
   }
